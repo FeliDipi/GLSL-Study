@@ -13,8 +13,8 @@ function AppThree() {
     <Canvas style={{ width: "600px", height: "600px" }}>
       <PerspectiveCamera makeDefault position={[0, 0, 5]} />
       <OrbitControls />
-      {/* <SphereWithShader /> */}
-      <PlaneWithShader />
+      <SphereWithShader />
+      {/* <PlaneWithShader /> */}
       <Environment preset="city" blur={0.8} />
       <ContactShadows
         position={[0, -1, 0]}

@@ -1,10 +1,10 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 
-import vertex from "./shaders/initial-three/vertex.glsl?raw";
-import fragment from "./shaders/initial-three/fragment.glsl?raw";
+import vertex from "./shaders/disolve-basic/vertex.glsl?raw";
+import fragment from "./shaders/disolve-basic/fragment.glsl?raw";
 
-import { MeshPhysicalMaterial, Vector2 } from "three";
+import { MeshPhysicalMaterial } from "three";
 
 const SphereWithShader = () => {
   const materialRef = useRef<any>(null);
@@ -14,9 +14,6 @@ const SphereWithShader = () => {
       base: MeshPhysicalMaterial,
       uniforms: {
         u_time: { value: 0 },
-        u_resolution: {
-          value: new Vector2(600, 600),
-        },
       },
       fragmentShader: fragment,
       vertexShader: vertex,

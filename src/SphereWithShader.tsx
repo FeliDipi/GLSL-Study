@@ -6,7 +6,7 @@ import fragment from "./shaders/initial-three/fragment.glsl?raw";
 
 import { MeshPhysicalMaterial, Vector2 } from "three";
 
-const Scene = () => {
+const SphereWithShader = () => {
   const materialRef = useRef<any>(null);
 
   const materialData = useMemo(
@@ -38,4 +38,4 @@ const Scene = () => {
   );
 };
 
-export default Scene;
+export default SphereWithShader;

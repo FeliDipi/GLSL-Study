@@ -38,7 +38,7 @@ function App() {
     }
   }, []);
 
-  return <canvas ref={canvasRef} width={640} height={480} />;
+  return <canvas ref={canvasRef} width={600} height={600} />;
 }
 
 function initShaderProgram(
@@ -112,31 +112,43 @@ function drawScene(gl: WebGLRenderingContext, programInfo: any, buffers: any) {
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  {
-    const numComponents = 2;
-    const type = gl.FLOAT;
-    const normalize = false;
-    const stride = 0;
-    const offset = 0;
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
-    gl.vertexAttribPointer(
-      programInfo.attribLocations.vertexPosition,
-      numComponents,
-      type,
-      normalize,
-      stride,
-      offset
-    );
-    gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
-  }
+  const numComponents = 2;
+  const type = gl.FLOAT;
+  const normalize = false;
+  const stride = 0;
+  const offset = 0;
+  const vertexCount = 4;
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
+  gl.vertexAttribPointer(
+    programInfo.attribLocations.vertexPosition,
+    numComponents,
+    type,
+    normalize,
+    stride,
+    offset
+  );
+  gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
 
   gl.useProgram(programInfo.program);
 
-  {
-    const offset = 0;
-    const vertexCount = 4;
+  const uTimeLocation = gl.getUniformLocation(programInfo.program, "u_time");
+  const uResolutionLocation = gl.getUniformLocation(
+    programInfo.program,
+    "u_resolution"
+  );
+
+  gl.uniform2f(uResolutionLocation, gl.canvas.width, gl.canvas.height);
+
+  function render() {
+    const timeInSeconds = performance.now() / 1000;
+    gl.uniform1f(uTimeLocation, timeInSeconds);
+
+    gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
+    requestAnimationFrame(render);
   }
+
+  render();
 }
 
 export default App;

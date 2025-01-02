@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import fragment from "./shaders/initial/fragment.glsl?raw";
 import vertex from "./shaders/initial/vertex.glsl?raw";
 
-function App() {
+function AppWebGL() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -151,4 +151,4 @@ function drawScene(gl: WebGLRenderingContext, programInfo: any, buffers: any) {
   render();
 }
 
-export default App;
+export default AppWebGL;

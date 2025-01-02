@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { fsSource, vsSource } from "./shaders/initial/source";
+import fragment from "./shaders/initial/fragment.glsl?raw";
+import vertex from "./shaders/initial/vertex.glsl?raw";
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -15,8 +16,8 @@ function App() {
 
       const shaderProgram: WebGLProgram | null = initShaderProgram(
         gl,
-        vsSource,
-        fsSource
+        vertex,
+        fragment
       );
 
       if (!shaderProgram) return;

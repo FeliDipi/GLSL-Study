@@ -1,8 +1,8 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 
-import vertex from "./shaders/disolve-basic/vertex.glsl?raw";
-import fragment from "./shaders/disolve-basic/fragment.glsl?raw";
+import vertex from "./shaders/wave/vertex.glsl?raw";
+import fragment from "./shaders/wave/fragment.glsl?raw";
 
 import { MeshPhysicalMaterial } from "three";
 

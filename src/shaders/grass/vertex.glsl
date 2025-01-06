@@ -1,32 +1,54 @@
-uniform float sway;
-uniform float sway_;
-uniform float sway_pow;
-uniform float sway_time_scale;
-uniform vec3 sway_dir;
-uniform sampler2D sway_noise; // Asume un ruido adecuado cargado como textura
-uniform vec3 grass_scale;
-uniform float sway_noise_sampeling_scale;
+attribute vec3 terrPosi;
+attribute float angle;
+
 uniform float time;
 
-varying float current_wind;
-varying vec3 vert;
+varying vec2 vUv;
+varying vec3 vPosition;
+varying float vAngle;
 
-float sclamp(float f, float sc) {
-    return clamp(((f - 0.5) * sc) + 0.5, 0.0, 1.0);
+vec4 quat_from_axis_angle(vec3 axis, float angle) {
+    vec4 qr;
+    float half_angle = (angle * 0.5) * 3.14159 / 180.0;
+    qr.x = axis.x * sin(half_angle);
+    qr.y = axis.y * sin(half_angle);
+    qr.z = axis.z * sin(half_angle);
+    qr.w = cos(half_angle);
+    return qr;
+}
+
+vec3 rotate_vertex_position(vec3 position, vec3 axis, float angle) {
+
+    vec4 q = quat_from_axis_angle(axis, angle);
+    vec3 v = position.xyz;
+    return v + 2.0 * cross(q.xyz, cross(q.xyz, v) + q.w * v);
+
 }
 
 void main() {
-    vec3 scaled_vertex = position * grass_scale;
-    vert = scaled_vertex;
 
-    vec4 sway_dir_local = vec4(sway_dir, 0.0);
-    vec3 world_vertex = (modelMatrix * vec4(scaled_vertex, 1.0)).xyz;
+    vUv = uv;
+    vAngle = angle;
 
-    current_wind = texture2D(sway_noise, normalize(sway_dir.xz) * (-time * sway_time_scale) + world_vertex.xz * sway_noise_sampeling_scale).x;
+    vec3 upDir = vec3(0.0, 1.0, 0.0);
 
-    vec3 sway_effect = normalize(sway_dir_local.xyz) * sway * scaled_vertex.y * sclamp(current_wind, 1.5);
-    scaled_vertex += sway_effect;
-    scaled_vertex.y -= sway_ * abs(pow(scaled_vertex.x, sway_pow));
+    vec3 finalPosi = position;
+    finalPosi.x *= 0.1;
+    finalPosi.y *= 1.0;
+    finalPosi.y += 0.5;
 
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(scaled_vertex, 1.0);
+    finalPosi = rotate_vertex_position(finalPosi, upDir, vAngle);
+
+    if(finalPosi.y > 0.5) {
+        finalPosi.x = (finalPosi.x + sin(time / 1000.0 * (vAngle * 0.01)) * 0.05);
+        finalPosi.z = (finalPosi.z + cos(time / 1000.0 * (vAngle * 0.01)) * 0.05);
+    }
+
+    finalPosi = terrPosi + finalPosi;
+
+    vec4 posi = vec4(finalPosi, 1.0);
+    vec4 mPosi = modelViewMatrix * posi;
+
+    gl_Position = projectionMatrix * mPosi;
+
 }

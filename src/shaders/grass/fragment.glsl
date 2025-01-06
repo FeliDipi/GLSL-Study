@@ -1,19 +1,18 @@
-uniform float color_scale;
-uniform float color_grad_height;
-uniform vec4 top_color;
-uniform vec4 bot_color;
-uniform float grass_roughness;
+precision mediump float;
 
-varying vec3 vert;
-varying float current_wind;
+varying vec2 vUv;
 
-float sclamp(float f, float sc) {
-    return clamp(((f - 0.5) * sc) + 0.5, 0.0, 1.0);
-}
+uniform sampler2D grassMaskTex;
+uniform sampler2D grassDiffTex;
 
 void main() {
-    vec3 albedo = mix(bot_color.rgb, top_color.rgb, (vert.y + color_grad_height) * color_scale);
-    float roughness = clamp(1.0 - (sclamp(current_wind, 0.8) * grass_roughness), 0.2, 1.0);
+    vec3 grassMaskColor = texture2D(grassMaskTex, vUv).rgb;
+    vec3 grassColor = texture2D(grassDiffTex, vUv).rgb;
+    gl_FragColor = vec4(grassColor, 1.0);
 
-    gl_FragColor = vec4(albedo, 1.0); // Cambiar si necesitas roughness y specular
+    //gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );
+
+    if(grassMaskColor.r <= 0.1) {
+        discard;
+    }
 }

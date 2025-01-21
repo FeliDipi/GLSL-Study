@@ -1,24 +1,22 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 
-import vertex from "./shaders/grass/vertex.glsl?raw";
-import fragment from "./shaders/grass/fragment.glsl?raw";
+import vertex from "./shaders/novathena/vertex.glsl?raw";
+import fragment from "./shaders/novathena/fragment.glsl?raw";
 
-import { MeshPhysicalMaterial } from "three";
-import { useTexture } from "@react-three/drei";
+import { MeshPhysicalMaterial, Vector2, Vector3 } from "three";
 
 const SphereWithShader = () => {
   const materialRef = useRef<any>(null);
-
-  const [noiseTxt, grassTxt] = useTexture(["/noise.png", "/grass.png"]);
 
   const materialData = useMemo(
     () => ({
       base: MeshPhysicalMaterial,
       uniforms: {
-        time: { value: 0 },
-        grassDiffTex: { value: grassTxt },
-        grassMaskTex: { value: noiseTxt },
+        uLightPosition: {
+          value: new Vector3(0, 10, 0),
+        },
+        uTime: { value: 0 },
       },
       vertexShader: vertex,
       fragmentShader: fragment,
@@ -28,7 +26,7 @@ const SphereWithShader = () => {
 
   useFrame(({ clock }) => {
     if (materialRef.current) {
-      materialRef.current.uniforms.time.value = clock.getElapsedTime();
+      materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
     }
   });
 
